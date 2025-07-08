@@ -1,13 +1,12 @@
 {
-  "name": "weather",
+  "name": "prediction-markets-mcp",
   "version": "1.0.0",
   "type": "module",
   "bin": {
-    "weather": "./build/index.js"
+    "prediction-markets": "./build/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js",
-    "test": "jest"
+    "build": "tsc && chmod 755 build/index.js"
   },
   "files": [
     "build"
@@ -19,10 +18,12 @@
   "description": "",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.0",
+    "superagent": "^10.2.2",
     "zod": "^3.25.75"
   },
   "devDependencies": {
     "@types/node": "^24.0.10",
+    "@types/superagent": "^8.1.9",
     "typescript": "^5.8.3"
   }
 }

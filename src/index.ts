@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import superagent from "superagent";
 
 const POLYMARKET_API_BASE = "https://clob.polymarket.com/markets";
 const USER_AGENT = "prediction-markets/1.0";
@@ -39,12 +40,11 @@ async function getPolymarketPredictionData(
   limit = 50,
   keyword = "",
 ): Promise<MarketWithOdds[]> {
-  const res = await fetch(`${POLYMARKET_API_BASE}?limit=${limit}`, {
-    headers: {
-      "User-Agent": USER_AGENT,
-    },
-  });
-  const json = await res.json();
+  const res = await superagent
+    .get(`${POLYMARKET_API_BASE}?limit=${limit}`)
+    .set("User-Agent", USER_AGENT);
+
+  const json = res.body;
 
   if (!Array.isArray(json.data)) {
     throw new Error("Unexpected API response format");
