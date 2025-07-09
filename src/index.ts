@@ -15,6 +15,50 @@ const server = new McpServer({
   },
 });
 
+const PREDICTIT_API_URL = "https://www.predictit.org/api/marketdata/all/";
+
+type PredictItContract = {
+  id: number;
+  name: string;
+  shortName: string;
+  status: string;
+  lastTradePrice: number;
+  bestBuyYesCost: number | null;
+  bestBuyNoCost: number | null;
+  bestSellYesCost: number | null;
+  bestSellNoCost: number | null;
+  lastClosePrice: number;
+};
+
+type PredictItMarket = {
+  id: number;
+  name: string;
+  shortName: string;
+  image: string;
+  url: string;
+  contracts: PredictItContract[];
+  timeStamp: string;
+  status: string;
+};
+
+type PredictItResponse = {
+  markets: PredictItMarket[];
+};
+
+async function getPredictItMarkets(): Promise<PredictItMarket[]> {
+  const res = await superagent
+    .get(PREDICTIT_API_URL)
+    .set("User-Agent", USER_AGENT);
+
+  const data: PredictItResponse = res.body;
+
+  if (!Array.isArray(data.markets)) {
+    throw new Error("Unexpected PredictIt API format");
+  }
+
+  return data.markets.filter((market) => market.status === "Open");
+}
+
 type Token = {
   token_id: string;
   outcome: string;
@@ -77,7 +121,7 @@ async function getPolymarketPredictionData(
 
 server.tool(
   "get-prediction-markets",
-  "Get prediction market prices",
+  "Get prediction market prices from Polymarket and PredictIt",
   {
     keyword: z
       .string()
@@ -85,9 +129,20 @@ server.tool(
       .describe("Keyword for the market you're looking for (e.g. 'trump')"),
   },
   async ({ keyword }) => {
-    const markets = await getPolymarketPredictionData(50, keyword);
+    const [polyMarkets, predictItMarkets] = await Promise.all([
+      getPolymarketPredictionData(50, keyword),
+      getPredictItMarkets(),
+    ]);
 
-    if (!markets.length) {
+    const lowerKeyword = keyword.toLowerCase();
+
+    const filteredPredictItMarkets = predictItMarkets.filter(
+      (m) =>
+        m.name.toLowerCase().includes(lowerKeyword) ||
+        m.shortName.toLowerCase().includes(lowerKeyword),
+    );
+
+    if (polyMarkets.length === 0 && filteredPredictItMarkets.length === 0) {
       return {
         content: [
           {
@@ -98,14 +153,31 @@ server.tool(
       };
     }
 
-    const text = markets
+    const polyText = polyMarkets
       .map((m) => {
         const oddsList = Object.entries(m.odds)
           .map(([outcome, prob]) => `${outcome}: ${(prob * 100).toFixed(1)}%`)
           .join(" | ");
-        return `**${m.question}**\n${oddsList}`;
+        return `**Polymarket: ${m.question}**\n${oddsList}`;
       })
       .join("\n\n");
+
+    const predictItText = filteredPredictItMarkets
+      .map((m) => {
+        const contractOdds = m.contracts
+          .map((c) => {
+            const pct =
+              c.lastTradePrice != null
+                ? `${(c.lastTradePrice * 100).toFixed(1)}%`
+                : "n/a";
+            return `${c.shortName}: ${pct}`;
+          })
+          .join(" | ");
+        return `**PredictIt: ${m.name}**\n${contractOdds}`;
+      })
+      .join("\n\n");
+
+    const text = [polyText, predictItText].filter(Boolean).join("\n\n");
 
     return {
       content: [
