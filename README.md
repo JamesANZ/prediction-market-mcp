@@ -6,6 +6,7 @@ A Model Context Protocol (MCP) server that provides real-time prediction market 
 
 - **Polymarket** - Crypto-based prediction markets with percentage-based odds
 - **PredictIt** - Traditional prediction markets with dollar-based prices
+- **Kalshi** - Regulated US prediction markets
 
 ## Features
 
@@ -68,7 +69,7 @@ The server provides a single tool: `get-prediction-markets`
 
 #### Example Queries
 
-```javascript
+```
 // Search for Trump-related markets
 {
   "keyword": "trump"
@@ -188,49 +189,11 @@ node build/index.js
 
 ### Common Issues
 
-#### ECONNRESET Errors
-
-- **Cause**: Network connectivity issues or API rate limiting
-- **Solution**: The server includes retry logic and error handling
-- **Prevention**: Ensure stable internet connection
-
 #### No Markets Found
 
 - **Cause**: Keyword too specific or no matching markets
 - **Solution**: Try broader keywords or check market availability
 - **Example**: Use "election" instead of "specific candidate name"
-
-#### API Response Errors
-
-- **Cause**: Changes in API format or endpoints
-- **Solution**: Check API documentation for updates
-- **Debugging**: Review server logs for specific error messages
-
-### Error Messages
-
-- `"No current prediction markets found for keyword: X"`: No markets match the search term
-- `"Unexpected API response format"`: API response structure has changed
-- `"Network error"`: Connection issues with external APIs
-
-## Configuration
-
-### Environment Variables
-
-Currently, the server uses default configuration. Future versions may support:
-
-- `POLYMARKET_API_BASE`: Custom Polymarket API endpoint
-- `PREDICTIT_API_URL`: Custom PredictIt API endpoint
-- `USER_AGENT`: Custom user agent string
-- `REQUEST_TIMEOUT`: API request timeout (milliseconds)
-
-### Rate Limiting
-
-The server respects API rate limits:
-
-- Polymarket: No specific limits documented
-- PredictIt: No specific limits documented
-
-## Contributing
 
 ### Development Setup
 
@@ -249,7 +212,7 @@ The server respects API rate limits:
 
 ## License
 
-ISC License - see LICENSE file for details
+MIT License - see LICENSE file for details
 
 ## Support
 
@@ -258,13 +221,3 @@ For issues and questions:
 1. Check the troubleshooting section
 2. Review existing GitHub issues
 3. Create a new issue with detailed information
-
-## Changelog
-
-### Version 1.0.0
-
-- Initial release
-- Support for Polymarket and PredictIt APIs
-- Keyword-based market filtering
-- Unified response format
-- Error handling and retry logic
