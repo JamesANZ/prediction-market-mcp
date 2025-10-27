@@ -6,16 +6,40 @@
     "prediction-markets": "./build/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js"
+    "build": "tsc && chmod 755 build/index.js",
+    "prepublishOnly": "npm run build",
+    "postinstall": "node scripts/setup-claude.js"
   },
   "files": [
-    "build"
+    "build",
+    "scripts",
+    "README.md",
+    "LICENSE"
   ],
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
+  "main": "build/index.js",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "prediction-markets",
+    "polymarket",
+    "predictit",
+    "kalshi",
+    "claude",
+    "ai",
+    "trading",
+    "odds"
+  ],
+  "author": "JamesANZ",
   "license": "MIT",
-  "description": "",
+  "description": "MCP server for real-time prediction market data from Polymarket, PredictIt, and Kalshi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JamesANZ/prediction-market-mcp.git"
+  },
+  "homepage": "https://github.com/JamesANZ/prediction-market-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/JamesANZ/prediction-market-mcp/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.0",
     "superagent": "^10.2.2",
