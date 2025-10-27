@@ -27,12 +27,30 @@ server.tool(
   },
   async ({ keyword }) => {
     const lowerKeyword = keyword.toLowerCase();
+    const errors: string[] = [];
 
-    const [polyMarkets, predictItMarkets, kalshiMarkets] = await Promise.all([
-      getPolymarketPredictionData(50, keyword),
-      getPredictItMarkets(),
-      getKalshiMarkets(),
-    ]);
+    // Try each API separately with error handling
+    let polyMarkets: any[] = [];
+    let predictItMarkets: any[] = [];
+    let kalshiMarkets: any[] = [];
+
+    try {
+      polyMarkets = await getPolymarketPredictionData(50, keyword);
+    } catch (error) {
+      errors.push(`Polymarket: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    try {
+      predictItMarkets = await getPredictItMarkets();
+    } catch (error) {
+      errors.push(`PredictIt: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    try {
+      kalshiMarkets = await getKalshiMarkets();
+    } catch (error) {
+      errors.push(`Kalshi: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 
     const filteredPredictIt = predictItMarkets.filter(
       (m) =>
@@ -44,34 +62,48 @@ server.tool(
       e.title.toLowerCase().includes(lowerKeyword),
     );
 
+    // If all APIs failed
+    if (errors.length === 3) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Failed to fetch prediction markets from all platforms:\n${errors.join('\n')}\n\nPlease try again later or check your internet connection.`,
+          },
+        ],
+      };
+    }
+
+    // If no markets found but some APIs succeeded
     if (
       polyMarkets.length === 0 &&
       filteredPredictIt.length === 0 &&
       filteredKalshi.length === 0
     ) {
+      const errorText = errors.length > 0 ? `⚠️ Some platforms failed: ${errors.join('; ')}\n\n` : '';
       return {
         content: [
           {
             type: "text",
-            text: `No prediction markets found for keyword: "${keyword}"`,
+            text: `${errorText}No prediction markets found for keyword: "${keyword}"`,
           },
         ],
       };
     }
 
     const polyText = polyMarkets
-      .map((m) => {
+      .map((m: any) => {
         const oddsList = Object.entries(m.odds)
-          .map(([outcome, prob]) => `${outcome}: ${(prob * 100).toFixed(1)}%`)
+          .map(([outcome, prob]: [string, any]) => `${outcome}: ${(prob * 100).toFixed(1)}%`)
           .join(" | ");
         return `**Polymarket: ${m.question}**\n${oddsList}`;
       })
       .join("\n\n");
 
     const predictItText = filteredPredictIt
-      .map((m) => {
+      .map((m: any) => {
         const contractOdds = m.contracts
-          .map((c) => {
+          .map((c: any) => {
             const pct =
               c.lastTradePrice != null
                 ? `${(c.lastTradePrice * 100).toFixed(1)}%`
@@ -91,11 +123,13 @@ server.tool(
       .filter(Boolean)
       .join("\n\n");
 
+    const errorText = errors.length > 0 ? `⚠️ Some platforms failed: ${errors.join('; ')}\n\n` : '';
+
     return {
       content: [
         {
           type: "text",
-          text,
+          text: errorText + text,
         },
       ],
     };
