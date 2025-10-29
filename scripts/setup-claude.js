@@ -3,15 +3,24 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
+import { fileURLToPath } from 'url';
 
-const CLAUDE_CONFIG_DIR = join(homedir(), '.config', 'claude');
-const CLAUDE_CONFIG_FILE = join(CLAUDE_CONFIG_DIR, 'claude_desktop_config.json');
+const CONFIG_FILE_NAME = "claude_desktop_config.json";
+const CLAUDE_CONFIG_DIR = join(homedir(), "Library", "Application Support", "Claude");
+const CLAUDE_CONFIG_FILE = join(CLAUDE_CONFIG_DIR, CONFIG_FILE_NAME);
+
+// Get the package directory path (this script is in scripts/, so go up one level)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageDir = dirname(__dirname); // Go up from scripts/ to package root
 
 const MCP_SERVER_CONFIG = {
   "mcpServers": {
-    "prediction-markets": {
-      "command": "npx",
-      "args": ["prediction-markets-mcp"],
+    "prediction-markets-mcp": {
+      "command": "node",
+      "args": [
+        join(packageDir, "build", "index.js")
+      ],
       "env": {}
     }
   }
@@ -70,9 +79,9 @@ function setupClaudeConfig() {
     console.log('1. Open Claude Desktop');
     console.log('2. Go to Settings > Developer');
     console.log('3. Add a new MCP server with:');
-    console.log('   - Name: prediction-markets');
-    console.log('   - Command: npx');
-    console.log('   - Args: prediction-markets-mcp');
+    console.log('   - Name: prediction-markets-mcp');
+    console.log('   - Command: node');
+    console.log(`   - Args: [\"${join(packageDir, "build", "index.js")}\"]`);
     process.exit(1);
   }
 }
