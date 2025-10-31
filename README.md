@@ -4,6 +4,10 @@
 
 A Model Context Protocol (MCP) server that provides real-time prediction market data from multiple platforms. This server allows you to query prediction markets for current odds, prices, and market information through a unified interface.
 
+<a href="https://glama.ai/mcp/servers/@JamesANZ/prediction-market-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@JamesANZ/prediction-market-mcp/badge" alt="prediction-market-mcp MCP server" />
+</a>
+
 ## Supported Platforms
 
 - **Polymarket** - Crypto-based prediction markets with percentage-based odds
