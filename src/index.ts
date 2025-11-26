@@ -2,10 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import {
-  getKalshiMarkets,
+  getKalshiEventsWithMarkets,
   getPolymarketPredictionData,
   getPredictItMarkets,
 } from "./utils/utils.js";
+import { KalshiMarket } from "./utils/types.js";
 
 const server = new McpServer({
   name: "prediction-markets",
@@ -47,7 +48,7 @@ server.tool(
     }
 
     try {
-      kalshiMarkets = await getKalshiMarkets();
+      kalshiMarkets = await getKalshiEventsWithMarkets(keyword);
     } catch (error) {
       errors.push(`Kalshi: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -58,9 +59,7 @@ server.tool(
         m.shortName.toLowerCase().includes(lowerKeyword),
     );
 
-    const filteredKalshi = kalshiMarkets.filter((e) =>
-      e.title.toLowerCase().includes(lowerKeyword),
-    );
+    const filteredKalshi = kalshiMarkets;
 
     // If all APIs failed
     if (errors.length === 3) {
@@ -116,7 +115,63 @@ server.tool(
       .join("\n\n");
 
     const kalshiText = filteredKalshi
-      .map((e) => `**Kalshi: ${e.title}**\n${e.sub_title} (${e.category})`)
+      .map((e) => {
+        if (!e.markets || e.markets.length === 0) {
+          return `**Kalshi: ${e.title}**\n${e.sub_title} (${e.category}) - No active markets`;
+        }
+
+        const marketTexts = e.markets.map((market: KalshiMarket) => {
+          // Calculate probability from bid/ask midpoint, or use last price
+          const yesBid = parseFloat(market.yes_bid_dollars || "0");
+          const yesAsk = parseFloat(market.yes_ask_dollars || "0");
+          const noBid = parseFloat(market.no_bid_dollars || "0");
+          const noAsk = parseFloat(market.no_ask_dollars || "0");
+          const lastPrice = parseFloat(market.last_price_dollars || "0");
+
+          let yesProb = "n/a";
+          let noProb = "n/a";
+
+          // Calculate Yes probability
+          if (yesBid > 0 || yesAsk > 0) {
+            const yesMid = yesBid > 0 && yesAsk > 0 
+              ? (yesBid + yesAsk) / 2 
+              : lastPrice > 0 
+                ? lastPrice 
+                : yesBid > 0 
+                  ? yesBid 
+                  : yesAsk;
+            yesProb = `${(yesMid * 100).toFixed(1)}%`;
+          } else if (lastPrice > 0) {
+            yesProb = `${(lastPrice * 100).toFixed(1)}%`;
+          }
+
+          // Calculate No probability (complement of Yes for binary markets)
+          if (noBid > 0 || noAsk > 0) {
+            const noMid = noBid > 0 && noAsk > 0 
+              ? (noBid + noAsk) / 2 
+              : (1 - lastPrice) > 0 && lastPrice > 0
+                ? (1 - lastPrice) 
+                : noBid > 0 
+                  ? noBid 
+                  : noAsk;
+            noProb = `${(noMid * 100).toFixed(1)}%`;
+          } else if (lastPrice > 0) {
+            noProb = `${((1 - lastPrice) * 100).toFixed(1)}%`;
+          }
+
+          const statusText = market.status && market.status !== "open" && market.status !== "active" && market.status !== "live"
+            ? ` [${market.status}]`
+            : "";
+
+          const marketSubtitle = market.subtitle || market.yes_sub_title || "";
+          const subtitleText = marketSubtitle ? ` (${marketSubtitle})` : "";
+
+          return `  ${market.yes_sub_title || "Yes"}: ${yesProb} | ${market.no_sub_title || "No"}: ${noProb}${subtitleText}${statusText}`;
+        });
+
+        const eventSubtitle = e.sub_title ? `\n${e.sub_title}` : "";
+        return `**Kalshi: ${e.title}**${eventSubtitle} (${e.category})\n${marketTexts.join("\n")}`;
+      })
       .join("\n\n");
 
     const text = [polyText, predictItText, kalshiText]

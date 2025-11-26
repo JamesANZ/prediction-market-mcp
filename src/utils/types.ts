@@ -58,3 +58,31 @@ export type KalshiEvent = {
 export type KalshiResponse = {
   events: KalshiEvent[];
 };
+
+export type KalshiMarket = {
+  ticker: string;
+  event_ticker: string;
+  title: string;
+  subtitle?: string;
+  yes_sub_title?: string;
+  no_sub_title?: string;
+  status: string;
+  market_type: string;
+  last_price_dollars?: string;
+  yes_ask_dollars?: string;
+  yes_bid_dollars?: string;
+  no_ask_dollars?: string;
+  no_bid_dollars?: string;
+  volume?: number;
+  open_interest?: number;
+  [key: string]: any; // Allow additional fields from API
+};
+
+export type KalshiMarketsResponse = {
+  markets: KalshiMarket[];
+  cursor: string;
+};
+
+export type KalshiEventWithMarkets = KalshiEvent & {
+  markets?: KalshiMarket[];
+};
