@@ -31,6 +31,10 @@ You can install this MCP server directly in Cursor using the one-click install l
 
 **🔗 [Install in Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=prediction-markets-mcp&config=eyJwcmVkaWN0aW9uLW1hcmtldHMtbWNwIjp7ImNvbW1hbmQiOiJucHgiLCJhcmdzIjpbIi15IiwicHJlZGljdGlvbi1tYXJrZXRzLW1jcCJdfX0=)**
 
+```
+cursor://anysphere.cursor-deeplink/mcp/install?name=prediction-markets-mcp&config=eyJwcmVkaWN0aW9uLW1hcmtldHMtbWNwIjp7ImNvbW1hbmQiOiJucHgiLCJhcmdzIjpbIi15IiwicHJlZGljdGlvbi1tYXJrZXRzLW1jcCJdfX0=
+```
+
 This will automatically configure the MCP server using `npx`. No API keys are required.
 
 ### Prerequisites
