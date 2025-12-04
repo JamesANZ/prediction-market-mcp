@@ -25,6 +25,16 @@ A Model Context Protocol (MCP) server that provides real-time prediction market 
 
 ## Installation
 
+### Installing in Cursor
+
+You can install this MCP server directly in Cursor using the one-click install link:
+
+**🔗 [Install in Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=prediction-markets-mcp&config=eyJwcmVkaWN0aW9uLW1hcmtldHMtbWNwIjp7ImNvbW1hbmQiOiJucHgiLCJhcmdzIjpbIi15IiwicHJlZGljdGlvbi1tYXJrZXRzLW1jcCJdfX0=)**
+
+This will automatically configure the MCP server using `npx`. No API keys are required.
+
+**Generate a new install link:** Run `npm run generate-cursor-link` to generate a fresh install link with the latest configuration.
+
 ### Prerequisites
 
 - Node.js (v18 or higher)

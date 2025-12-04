@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
     "prepublishOnly": "npm run build",
-    "postinstall": "node scripts/setup-claude.js"
+    "postinstall": "node scripts/setup-claude.js",
+    "generate-cursor-link": "node scripts/generate-cursor-install-link.js"
   },
   "files": [
     "build",
