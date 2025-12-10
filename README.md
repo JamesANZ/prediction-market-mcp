@@ -1,265 +1,152 @@
-# prediction-markets-mcp
+# 📊 Prediction Markets MCP Server
+
+> **Real-time prediction market data in your AI workflow.** Get current odds and prices from Polymarket, PredictIt, and Kalshi. No API keys required.
+
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that brings live prediction market data into AI coding environments like Cursor and Claude Desktop.
 
 [![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/JamesANZ/prediction-market-mcp)](https://archestra.ai/mcp-catalog/jamesanz__prediction-market-mcp)
-
-A Model Context Protocol (MCP) server that provides real-time prediction market data from multiple platforms. This server allows you to query prediction markets for current odds, prices, and market information through a unified interface.
 
 <a href="https://glama.ai/mcp/servers/@JamesANZ/prediction-market-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@JamesANZ/prediction-market-mcp/badge" alt="prediction-market-mcp MCP server" />
 </a>
 
-## Supported Platforms
+## Why Use Prediction Markets MCP?
 
-- **Polymarket** - Crypto-based prediction markets with percentage-based odds
-- **PredictIt** - Traditional prediction markets with dollar-based prices
-- **Kalshi** - Regulated US prediction markets
+- 🆓 **No API Keys** – Works out of the box, zero configuration
+- 📈 **Multi-Platform** – Polymarket, PredictIt, and Kalshi in one interface
+- ⚡ **Real-time Data** – Current odds and prices from live markets
+- 🎯 **Easy Setup** – One-click install in Cursor or simple manual setup
+- 🔍 **Keyword Search** – Find markets by topic or keyword
+
+## Quick Start
+
+Ready to explore prediction markets? Install in seconds:
+
+**Install in Cursor (Recommended):**
+
+[🔗 Install in Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=prediction-markets-mcp&config=eyJwcmVkaWN0aW9uLW1hcmtldHMtbWNwIjp7ImNvbW1hbmQiOiJucHgiLCJhcmdzIjpbIi15IiwicHJlZGljdGlvbi1tYXJrZXRzLW1jcCJdfX0=)
+
+**Or install manually:**
+
+```bash
+npm install -g prediction-markets-mcp
+# Or from source:
+git clone https://github.com/JamesANZ/prediction-markets-mcp.git
+cd prediction-markets-mcp && npm install && npm run build
+```
 
 ## Features
 
-- **Multi-platform Support**: Query both crypto and traditional prediction markets
-- **Real-time Data**: Get current odds and prices from live markets
-- **Keyword Search**: Filter markets by specific keywords or topics
-- **Unified Interface**: Consistent data format across different platforms
-- **Error Handling**: Graceful handling of API failures and network issues
-- **Type Safety**: Full TypeScript support with comprehensive type definitions
+### `get-prediction-markets`
+
+Search for prediction markets across multiple platforms by keyword.
+
+**Parameters:**
+- `keyword` (string, required): Search term (max 50 characters)
+  - Examples: "trump", "election", "supreme court"
+
+**Returns:**
+- Markets from Polymarket (percentage odds)
+- Markets from PredictIt (dollar prices)
+- Markets from Kalshi (regulated US markets)
 
 ## Installation
 
-### Installing in Cursor
+### Cursor (One-Click)
 
-You can install this MCP server directly in Cursor using the one-click install link:
-
-**🔗 [Install in Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=prediction-markets-mcp&config=eyJwcmVkaWN0aW9uLW1hcmtldHMtbWNwIjp7ImNvbW1hbmQiOiJucHgiLCJhcmdzIjpbIi15IiwicHJlZGljdGlvbi1tYXJrZXRzLW1jcCJdfX0=)**
+Click the install link above or use:
 
 ```
 cursor://anysphere.cursor-deeplink/mcp/install?name=prediction-markets-mcp&config=eyJwcmVkaWN0aW9uLW1hcmtldHMtbWNwIjp7ImNvbW1hbmQiOiJucHgiLCJhcmdzIjpbIi15IiwicHJlZGljdGlvbi1tYXJrZXRzLW1jcCJdfX0=
 ```
 
-This will automatically configure the MCP server using `npx`. No API keys are required.
+### Manual Installation
 
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Setup
-
-1. Clone the repository:
+**Requirements:** Node.js 18+ and npm
 
 ```bash
-git clone <repository-url>
+# Clone and build
+git clone https://github.com/JamesANZ/prediction-markets-mcp.git
 cd prediction-markets-mcp
-```
-
-2. Install dependencies:
-
-```bash
 npm install
-```
-
-3. Build the project:
-
-```bash
 npm run build
-```
 
-## Usage
-
-### Running the Server
-
-Start the MCP server:
-
-```bash
+# Run server
 node build/index.js
 ```
 
-The server runs on stdio and can be integrated with MCP-compatible clients.
+## Usage Examples
 
-### API Endpoints
+### Search for Markets
+Find prediction markets by keyword:
 
-The server provides a single tool: `get-prediction-markets`
-
-#### Parameters
-
-- `keyword` (string, required): Search term to filter markets
-  - Maximum length: 50 characters
-  - Examples: "trump", "election", "supreme court"
-
-#### Example Queries
-
-```
-// Search for Trump-related markets
+```json
 {
-  "keyword": "trump"
-}
-
-// Search for election markets
-{
-  "keyword": "election"
-}
-
-// Search for Supreme Court markets
-{
-  "keyword": "supreme court"
+  "tool": "get-prediction-markets",
+  "arguments": {
+    "keyword": "trump"
+  }
 }
 ```
 
-### Response Format
+### Search Election Markets
+Find markets related to elections:
 
-The server returns prediction market data in the following format:
-
-#### Polymarket Markets
-
+```json
+{
+  "tool": "get-prediction-markets",
+  "arguments": {
+    "keyword": "election"
+  }
+}
 ```
-**Polymarket: Will Trump win the 2024 election?**
-Yes: 45.2% | No: 54.8%
-```
 
-#### PredictIt Markets
+## Supported Platforms
 
-```
-**PredictIt: Which party will win the 2025 gubernatorial election in Virginia?**
-Democratic: 89.0% | Republican: 11.0%
-```
+| Platform | Format | Description |
+|----------|--------|-------------|
+| **Polymarket** | Percentage odds | Crypto-based prediction markets |
+| **PredictIt** | Dollar prices | Traditional prediction markets |
+| **Kalshi** | Regulated | US-regulated prediction markets |
 
 ## Data Sources
 
-### Polymarket API
+- **Polymarket**: `https://clob.polymarket.com/markets`
+- **PredictIt**: `https://www.predictit.org/api/marketdata/all/`
+- **Kalshi**: Regulated US prediction markets
 
-- **Base URL**: `https://clob.polymarket.com/markets`
-- **Format**: JSON
-- **Odds Display**: Percentages (e.g., 65.2%)
-- **Data**: Market questions, active status, token prices
+## Use Cases
 
-### PredictIt API
+- **Traders** – Monitor odds and prices across platforms
+- **Researchers** – Analyze market sentiment and predictions
+- **Developers** – Build apps with prediction market data
+- **Analysts** – Track political and event probabilities
 
-- **Base URL**: `https://www.predictit.org/api/marketdata/all/`
-- **Format**: JSON
-- **Odds Display**: Dollar amounts (e.g., $0.65)
-- **Data**: Market names, contracts, trade prices, status
+## Technical Details
 
-## Development
+**Built with:** Node.js, TypeScript, MCP SDK  
+**Dependencies:** `@modelcontextprotocol/sdk`, `superagent`, `zod`  
+**Platforms:** macOS, Windows, Linux
 
-### Project Structure
+## Contributing
 
-```
-prediction-markets-mcp/
-├── src/
-│   └── index.ts          # Main server implementation
-├── build/                # Compiled JavaScript output
-├── package.json          # Dependencies and scripts
-├── tsconfig.json         # TypeScript configuration
-└── README.md            # This file
-```
+⭐ **If this project helps you, please star it on GitHub!** ⭐
 
-### Key Components
-
-#### Type Definitions
-
-```typescript
-// Polymarket types
-type Market = {
-  question: string;
-  active: boolean;
-  archived: boolean;
-  tokens: Token[];
-};
-
-// PredictIt types
-type PredictItMarket = {
-  id: number;
-  name: string;
-  shortName: string;
-  contracts: PredictItContract[];
-  status: string;
-};
-```
-
-#### Core Functions
-
-- `getPolymarketPredictionData()`: Fetches and processes Polymarket data
-- `getPredictItMarkets()`: Fetches all PredictIt markets
-- `makeApiRequest()`: Handles HTTP requests with proper headers
-
-### Building
-
-```bash
-# Development build
-npm run build
-
-# Watch mode (if needed)
-npm run dev
-```
-
-### Testing
-
-To test the server manually:
-
-1. Start the server:
-
-```bash
-node build/index.js
-```
-
-2. Send test requests through an MCP client or test the API endpoints directly.
-
-## Troubleshooting
-
-### Common Issues
-
-#### No Markets Found
-
-- **Cause**: Keyword too specific or no matching markets
-- **Solution**: Try broader keywords or check market availability
-- **Example**: Use "election" instead of "specific candidate name"
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-### Code Style
-
-- Use TypeScript for all new code
-- Follow existing naming conventions
-- Add JSDoc comments for public functions
-- Ensure all builds pass before submitting
-
-## Donate
-
-If you find this project useful, consider supporting it with Bitcoin:
-
-**⚡ Lightning Network**
-
-<img src="https://raw.githubusercontent.com/bitcoinwarrior1/CitySats/main/public/lightning.jpeg" alt="Lightning QR Code" width="120" />
-
-<code>lnbc1pjhhsqepp5mjgwnvg0z53shm22hfe9us289lnaqkwv8rn2s0rtekg5vvj56xnqdqqcqzzsxqyz5vqsp5gu6vh9hyp94c7t3tkpqrp2r059t4vrw7ps78a4n0a2u52678c7yq9qyyssq7zcferywka50wcy75skjfrdrk930cuyx24rg55cwfuzxs49rc9c53mpz6zug5y2544pt8y9jflnq0ltlha26ed846jh0y7n4gm8jd3qqaautqa</code>
-
-**₿ On-Chain**
-
-<img src="https://raw.githubusercontent.com/bitcoinwarrior1/CitySats/main/public/onchain.jpg" alt="Bitcoin Address QR Code" width="120" />
-
-<code>[bc1ptzvr93pn959xq4et6sqzpfnkk2args22ewv5u2th4ps7hshfaqrshe0xtp](https://mempool.space/address/bc1ptzvr93pn959xq4et6sqzpfnkk2args22ewv5u2th4ps7hshfaqrshe0xtp)</code>
-
-**Ξ Ethereum / EVM Networks**
-
-<img src="https://raw.githubusercontent.com/bitcoinwarrior1/CitySats/main/public/ethereum.jpg" alt="Ethereum Address QR Code" width="120" />
-
-<code>[0x42ea529282DDE0AA87B42d9E83316eb23FE62c3f](https://etherscan.io/address/0x42ea529282DDE0AA87B42d9E83316eb23FE62c3f)</code>
-
-*Donations from any EVM-compatible network (Ethereum, Polygon, Arbitrum, Optimism, BSC, Avalanche, etc.) will work perfectly! You can also send tokens like USDT, USDC, DAI, and other ERC-20 tokens to this address.*
+Contributions welcome! Please open an issue or submit a pull request.
 
 ## License
 
-MIT License - see LICENSE file for details
+MIT License – see LICENSE file for details.
 
 ## Support
 
-For issues and questions:
+If you find this project useful, consider supporting it:
 
-1. Check the troubleshooting section
-2. Review existing GitHub issues
-3. Create a new issue with detailed information
+**⚡ Lightning Network**
+```
+lnbc1pjhhsqepp5mjgwnvg0z53shm22hfe9us289lnaqkwv8rn2s0rtekg5vvj56xnqdqqcqzzsxqyz5vqsp5gu6vh9hyp94c7t3tkpqrp2r059t4vrw7ps78a4n0a2u52678c7yq9qyyssq7zcferywka50wcy75skjfrdrk930cuyx24rg55cwfuzxs49rc9c53mpz6zug5y2544pt8y9jflnq0ltlha26ed846jh0y7n4gm8jd3qqaautqa
+```
+
+**₿ Bitcoin**: [bc1ptzvr93pn959xq4et6sqzpfnkk2args22ewv5u2th4ps7hshfaqrshe0xtp](https://mempool.space/address/bc1ptzvr93pn959xq4et6sqzpfnkk2args22ewv5u2th4ps7hshfaqrshe0xtp)
+
+**Ξ Ethereum/EVM**: [0x42ea529282DDE0AA87B42d9E83316eb23FE62c3f](https://etherscan.io/address/0x42ea529282DDE0AA87B42d9E83316eb23FE62c3f)
