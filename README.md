@@ -42,10 +42,12 @@ cd prediction-markets-mcp && npm install && npm run build
 Search for prediction markets across multiple platforms by keyword.
 
 **Parameters:**
+
 - `keyword` (string, required): Search term (max 50 characters)
   - Examples: "trump", "election", "supreme court"
 
 **Returns:**
+
 - Markets from Polymarket (percentage odds)
 - Markets from PredictIt (dollar prices)
 - Markets from Kalshi (regulated US markets)
@@ -78,6 +80,7 @@ node build/index.js
 ## Usage Examples
 
 ### Search for Markets
+
 Find prediction markets by keyword:
 
 ```json
@@ -90,6 +93,7 @@ Find prediction markets by keyword:
 ```
 
 ### Search Election Markets
+
 Find markets related to elections:
 
 ```json
@@ -103,11 +107,11 @@ Find markets related to elections:
 
 ## Supported Platforms
 
-| Platform | Format | Description |
-|----------|--------|-------------|
+| Platform       | Format          | Description                     |
+| -------------- | --------------- | ------------------------------- |
 | **Polymarket** | Percentage odds | Crypto-based prediction markets |
-| **PredictIt** | Dollar prices | Traditional prediction markets |
-| **Kalshi** | Regulated | US-regulated prediction markets |
+| **PredictIt**  | Dollar prices   | Traditional prediction markets  |
+| **Kalshi**     | Regulated       | US-regulated prediction markets |
 
 ## Data Sources
 
@@ -143,6 +147,7 @@ MIT License – see LICENSE file for details.
 If you find this project useful, consider supporting it:
 
 **⚡ Lightning Network**
+
 ```
 lnbc1pjhhsqepp5mjgwnvg0z53shm22hfe9us289lnaqkwv8rn2s0rtekg5vvj56xnqdqqcqzzsxqyz5vqsp5gu6vh9hyp94c7t3tkpqrp2r059t4vrw7ps78a4n0a2u52678c7yq9qyyssq7zcferywka50wcy75skjfrdrk930cuyx24rg55cwfuzxs49rc9c53mpz6zug5y2544pt8y9jflnq0ltlha26ed846jh0y7n4gm8jd3qqaautqa
 ```

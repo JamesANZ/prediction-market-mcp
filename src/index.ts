@@ -38,19 +38,25 @@ server.tool(
     try {
       polyMarkets = await getPolymarketPredictionData(50, keyword);
     } catch (error) {
-      errors.push(`Polymarket: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errors.push(
+        `Polymarket: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
 
     try {
       predictItMarkets = await getPredictItMarkets();
     } catch (error) {
-      errors.push(`PredictIt: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errors.push(
+        `PredictIt: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
 
     try {
       kalshiMarkets = await getKalshiEventsWithMarkets(keyword);
     } catch (error) {
-      errors.push(`Kalshi: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errors.push(
+        `Kalshi: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
 
     const filteredPredictIt = predictItMarkets.filter(
@@ -67,7 +73,7 @@ server.tool(
         content: [
           {
             type: "text",
-            text: `Failed to fetch prediction markets from all platforms:\n${errors.join('\n')}\n\nPlease try again later or check your internet connection.`,
+            text: `Failed to fetch prediction markets from all platforms:\n${errors.join("\n")}\n\nPlease try again later or check your internet connection.`,
           },
         ],
       };
@@ -79,7 +85,10 @@ server.tool(
       filteredPredictIt.length === 0 &&
       filteredKalshi.length === 0
     ) {
-      const errorText = errors.length > 0 ? `⚠️ Some platforms failed: ${errors.join('; ')}\n\n` : '';
+      const errorText =
+        errors.length > 0
+          ? `⚠️ Some platforms failed: ${errors.join("; ")}\n\n`
+          : "";
       return {
         content: [
           {
@@ -93,7 +102,10 @@ server.tool(
     const polyText = polyMarkets
       .map((m: any) => {
         const oddsList = Object.entries(m.odds)
-          .map(([outcome, prob]: [string, any]) => `${outcome}: ${(prob * 100).toFixed(1)}%`)
+          .map(
+            ([outcome, prob]: [string, any]) =>
+              `${outcome}: ${(prob * 100).toFixed(1)}%`,
+          )
           .join(" | ");
         return `**Polymarket: ${m.question}**\n${oddsList}`;
       })
@@ -133,13 +145,14 @@ server.tool(
 
           // Calculate Yes probability
           if (yesBid > 0 || yesAsk > 0) {
-            const yesMid = yesBid > 0 && yesAsk > 0 
-              ? (yesBid + yesAsk) / 2 
-              : lastPrice > 0 
-                ? lastPrice 
-                : yesBid > 0 
-                  ? yesBid 
-                  : yesAsk;
+            const yesMid =
+              yesBid > 0 && yesAsk > 0
+                ? (yesBid + yesAsk) / 2
+                : lastPrice > 0
+                  ? lastPrice
+                  : yesBid > 0
+                    ? yesBid
+                    : yesAsk;
             yesProb = `${(yesMid * 100).toFixed(1)}%`;
           } else if (lastPrice > 0) {
             yesProb = `${(lastPrice * 100).toFixed(1)}%`;
@@ -147,21 +160,26 @@ server.tool(
 
           // Calculate No probability (complement of Yes for binary markets)
           if (noBid > 0 || noAsk > 0) {
-            const noMid = noBid > 0 && noAsk > 0 
-              ? (noBid + noAsk) / 2 
-              : (1 - lastPrice) > 0 && lastPrice > 0
-                ? (1 - lastPrice) 
-                : noBid > 0 
-                  ? noBid 
-                  : noAsk;
+            const noMid =
+              noBid > 0 && noAsk > 0
+                ? (noBid + noAsk) / 2
+                : 1 - lastPrice > 0 && lastPrice > 0
+                  ? 1 - lastPrice
+                  : noBid > 0
+                    ? noBid
+                    : noAsk;
             noProb = `${(noMid * 100).toFixed(1)}%`;
           } else if (lastPrice > 0) {
             noProb = `${((1 - lastPrice) * 100).toFixed(1)}%`;
           }
 
-          const statusText = market.status && market.status !== "open" && market.status !== "active" && market.status !== "live"
-            ? ` [${market.status}]`
-            : "";
+          const statusText =
+            market.status &&
+            market.status !== "open" &&
+            market.status !== "active" &&
+            market.status !== "live"
+              ? ` [${market.status}]`
+              : "";
 
           const marketSubtitle = market.subtitle || market.yes_sub_title || "";
           const subtitleText = marketSubtitle ? ` (${marketSubtitle})` : "";
@@ -178,7 +196,10 @@ server.tool(
       .filter(Boolean)
       .join("\n\n");
 
-    const errorText = errors.length > 0 ? `⚠️ Some platforms failed: ${errors.join('; ')}\n\n` : '';
+    const errorText =
+      errors.length > 0
+        ? `⚠️ Some platforms failed: ${errors.join("; ")}\n\n`
+        : "";
 
     return {
       content: [
