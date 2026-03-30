@@ -35,6 +35,10 @@ git clone https://github.com/JamesANZ/prediction-markets-mcp.git
 cd prediction-markets-mcp && npm install && npm run build
 ```
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/jamesanz-prediction-market-mcp).
+
 ## Features
 
 ### `get-prediction-markets`
