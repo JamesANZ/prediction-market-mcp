@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
+    "test": "node --import tsx --test test/*.test.ts",
     "prepublishOnly": "npm run build",
     "postinstall": "node scripts/setup-claude.js",
     "generate-cursor-link": "node scripts/generate-cursor-install-link.js"
@@ -49,6 +50,7 @@
   "devDependencies": {
     "@types/node": "^24.0.10",
     "@types/superagent": "^8.1.9",
+    "tsx": "^4.23.15",
     "typescript": "^5.8.3"
   }
 }
