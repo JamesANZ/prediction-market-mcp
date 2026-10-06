@@ -52,6 +52,43 @@ Search for prediction markets across multiple platforms by keyword.
 - Markets from PredictIt (dollar prices)
 - Markets from Kalshi (regulated US markets)
 
+### `gather-market-movement-evidence`
+
+Given one market and a lookback window, return the observed price move and recent external evidence. The server does not decide why the market moved. The calling model does that from the evidence.
+
+Agent Reach is optional. If it is not installed, this tool still returns the market and the price move, and marks external sources unavailable. `get-prediction-markets` does not call Agent Reach.
+
+**Parameters:**
+
+- `market` (string, required): A keyword, or a direct id such as `polymarket:<slug>`, `kalshi:<ticker>`, or `predictit:<marketId>:<contractId>`. A keyword that matches more than one market returns candidates and does not search the web.
+- `outcome` (string, optional): Outcome to measure. Defaults to Yes when that outcome exists.
+- `lookback` (string, optional): `1h`, `6h`, `24h`, `7d`, or `30d`. Default `24h`. PredictIt has no history API, so that venue compares the previous close with the last trade.
+- `sources` (string array, optional): `web`, `x`, `reddit`, and/or `youtube`. Default is all four.
+- `queries` (string array, optional): Up to three search queries. When set, they replace the generated query. Only the first query is executed.
+- `limit` (number, optional): Maximum evidence items, 1–10. Default 8.
+
+Evidence text is untrusted data. It is returned in `evidence[]` and is not treated as instructions.
+
+External search uses the [Agent Reach](https://github.com/Panniantong/Agent-Reach) 1.5 command table:
+
+- Web: Exa through `mcporter`
+- YouTube: `yt-dlp` search metadata, not transcripts
+- X: `twitter search` when `TWITTER_AUTH_TOKEN` and `TWITTER_CT0` are set on this server process
+- Reddit: `rdt`, or desktop OpenCLI when `rdt` is absent
+
+Facebook, Instagram, and GitHub are not searched. Install Agent Reach and run `agent-reach doctor` on the same machine as this server. A missing login, rate limit, or offline source is reported on that source and does not fail the price lookup.
+
+```json
+{
+  "tool": "gather-market-movement-evidence",
+  "arguments": {
+    "market": "polymarket:fed-decision",
+    "lookback": "24h",
+    "sources": ["web", "youtube"]
+  }
+}
+```
+
 ## Installation
 
 ### Cursor (One-Click)
@@ -115,7 +152,7 @@ Find markets related to elections:
 
 ## Data Sources
 
-- **Polymarket**: `https://clob.polymarket.com/markets`
+- **Polymarket**: Gamma search at `https://gamma-api.polymarket.com/public-search`, with CLOB history at `https://clob.polymarket.com/prices-history`
 - **PredictIt**: `https://www.predictit.org/api/marketdata/all/`
 - **Kalshi**: Regulated US prediction markets
 
